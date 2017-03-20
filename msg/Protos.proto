@@ -22,17 +22,6 @@ gmCmdRes = 18001;
 heartBeat = 9999;
 }
 
-enum ItemId{
-   TableItem_ShuiHuZhuan = 0;
-   TableItem_ZhongYiTang = 1;
-   TableItem_TiTianXingDao = 2;
-   TableItem_SongJiang = 3;
-   TableItem_LinChong = 4;
-   TableItem_LuZhiShen = 5;
-   TableItem_Dao = 6;
-   TableItem_Qiang = 7;
-   TableItem_Fu = 8;
-}
 
 enum LoginTypes{
    Normal_Login = 0;
@@ -40,10 +29,3 @@ enum LoginTypes{
    ReConnect = 2;
 }
 
-enum SpecialTypes{
-Normal_table = 0;
-All_One = 1;
-All_Person = 3;
-All_Weapon = 4;
-Have_Marry_Game = 5;
-}

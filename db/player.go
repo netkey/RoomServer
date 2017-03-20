@@ -1,6 +1,5 @@
-package internal
+package db
 import (
-	"RoomServer/db"
 	"github.com/name5566/leaf/log"
 	"errors"
 	"RoomServer/msg"
@@ -8,6 +7,7 @@ import (
 	"strconv"
 	"RoomServer/conf"
 	"time"
+	"RoomServer/common"
 )
 
 //处理player的数据逻辑，vip系统，等级成长，金币
@@ -50,7 +50,7 @@ type MarryGameData struct {
 func GetPlayerByUserName(Name string)(userData User,err error){
 	log.Debug(`GetPlayerByUserName:[%s]`,Name)
 	sqll := `select id,name,gold,exp,diamond,avatar,mobile,passwd,fbtoken,vip_level,player_level from user where name = ?`
-	row,err := db.RAWDB.Query(sqll,Name)
+	row,err := RAWDB.Query(sqll,Name)
 	if err != nil{
 		log.Debug(`Db query err:%v`,err.Error())
 		return
@@ -78,7 +78,7 @@ func GetPlayerByUserName(Name string)(userData User,err error){
 
 func GetPlayerByUserId(id string)(userData User,err error){
 	sqll := `select id,name,gold,exp,diamond,avatar,mobile,passwd,fbtoken,vip_level,player_level from user where id = ?`
-	row,err := db.RAWDB.Query(sqll,id)
+	row,err := RAWDB.Query(sqll,id)
 	if err != nil{
 		log.Debug(`Db query err:%v`,err.Error())
 		return
@@ -93,6 +93,11 @@ func GetPlayerByUserId(id string)(userData User,err error){
 	return
 }
 
+
+func UserInit(userInfo *User){
+	//config
+
+}
 
 func UserInfoNotice(userId string,a gate.Agent)(){
 	tmpData := a.UserData().(User)
@@ -117,14 +122,14 @@ func UserInfoNotice(userId string,a gate.Agent)(){
 	tmpData.IsLevelUp = false
 	tmpData.IsVipLevelUp = false
 	a.SetUserData(tmpData)
-	a.WriteMsg(&tmpRes,EC_NONE.Code())
+	a.WriteMsg(&tmpRes,common.EC_NONE.Code())
 	return
 }
 
 
 func CreateUser(name string,passwd string)(backID int64,err error){
 	sqll := `insert into user (name,passwd,gold) values (?,?,?)`
-	result,err := db.RAWDB.Exec(sqll,name,passwd,100)
+	result,err := RAWDB.Exec(sqll,name,passwd,100)
 	if err != nil{
 		log.Debug(`Db CreateUser err:%v`,err.Error())
 		return
@@ -139,7 +144,7 @@ func CreateUser(name string,passwd string)(backID int64,err error){
 
 func UpdatePlayCache(userCache User)(err error){
 	sqll := `update user set gold = ?,exp = ?,diamond = ?,avatar = ?,mobile = ?,player_level = ?,vip_level = ? where id = ?`
-	result,err := db.RAWDB.Exec(sqll,userCache.Gold,userCache.Exp,userCache.Diamond,userCache.Avatar,userCache.Mobile,userCache.Level,userCache.VipLevel,userCache.ID)
+	result,err := RAWDB.Exec(sqll,userCache.Gold,userCache.Exp,userCache.Diamond,userCache.Avatar,userCache.Mobile,userCache.Level,userCache.VipLevel,userCache.ID)
 	if err != nil{
 		log.Debug(`Db UpdatePlayCache err:%v`,err.Error())
 		return
@@ -151,14 +156,6 @@ func UpdatePlayCache(userCache User)(err error){
 	return
 }
 
-func UserInit(userInfo *User){
-	//config
-	index := userInfo.Level
-	if userInfo.Level >= int32(len(ExpTable)){
-		index = int32(len(ExpTable) - 1)
-	}
-	userInfo.UserMaxBetting = ExpTable[index].MaxBetting
-}
 
 
 
@@ -177,23 +174,6 @@ func CostGold(a gate.Agent,costGold int32)(err error){
 	tmpData.Gold = tmpData.Gold - costGold
 	tmpData.Exp = tmpData.Exp + costGold        						//未处理VIP
 	tmpData.TotalBetting = tmpData.TotalBetting + int64(costGold)		//記錄總投注數
-	log.Debug(`NowExp:[%d]  UpLevelExp:[%d]`,tmpData.Exp ,ExpTable[tmpData.Level].UpLevelExp)
-	for int(tmpData.Level) < len(ExpTable) && tmpData.Exp > ExpTable[tmpData.Level].UpLevelExp{
-		tmpData.Level = tmpData.Level + 1
-
-		if tmpData.Level >= int32(len(ExpTable)){
-			log.Debug(`Level Out of Range:Lv:[%d] MaxLv[%d]`,tmpData.Level,len(ExpTable))
-			tmpData.Level = int32(len(ExpTable) - 1);
-			break
-		}
-		tmpData.UserMaxBetting = ExpTable[tmpData.Level].MaxBetting
-		if tmpData.Level % 10 == 0{
-			//发钱
-			log.Debug(`User:[%s]  Leve:[%d] Add Gold: [%d]`,tmpData.Name,tmpData.Level,1000 * tmpData.Level)
-			tmpData.Gold = tmpData.Gold + 1000 * tmpData.Level
-		}
-		tmpData.IsLevelUp = true
-	}
 	a.SetUserData(tmpData)
 	return
 }
@@ -214,7 +194,7 @@ func AddGold(a gate.Agent,AddGold int32)(err error){
 
 func UpdatePass(id string,pass int)(err error){
 	sqll := `update user set passwd = ? where id = ?`
-	result,err := db.RAWDB.Exec(sqll,pass,id)
+	result,err := RAWDB.Exec(sqll,pass,id)
 	if err != nil{
 		log.Debug(`Db UpdatePass err:%v`,err.Error())
 		return

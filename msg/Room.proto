@@ -1,0 +1,28 @@
+syntax = "proto3";
+package msg;
+import "CommonData.proto";
+
+///////////////////room////////////////////////
+
+message CreateDeskReq{
+    int32 gameType = 1;
+}
+
+message CreateDeskRes{
+    string gameNum = 1;
+}
+
+
+message CheckInDeskReq{
+    string gameNum = 1;
+}
+
+
+message CheckInDeskRes{
+    DeskInfo deskInfo = 1;
+}
+
+
+message GameDataInfo{
+
+}
