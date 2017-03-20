@@ -1,0 +1,54 @@
+syntax = "proto3";
+package msg;
+import "CommonData.proto";
+//////////////////////心跳包/////////////////////////
+message HeartBeat{
+
+}
+
+///////////////////////登陆请求//////////////////////
+message LoginReq{
+    string userName = 1;
+    string passWd = 2;
+    int32 loginType = 3;
+    string accessToken = 4;
+    string reconnectToken = 5;
+}
+
+message LoginRes{
+    string reconnectToken = 1;
+}
+
+
+//////////////////用户数据更新通知///////////////////////
+message PlayerInfoUpdate{
+    UserData userInfo = 1;
+    ChangeMsg changeMsg = 2;
+}
+
+//////////////////////现金商店列表//////////////////////
+message BuyItems{
+    int64 itemId = 1;
+    int64 golds = 2;
+    int32 money = 3;
+    bool isBestValue = 4;
+    bool isMostPopular = 5;
+}
+
+message GetVipShopListReq{
+
+}
+
+message GetVipShopListRes{
+    repeated BuyItems ItemList = 1;
+}
+
+
+///////////////////购买物品///////////////////////
+message BuyItemReq{
+    int64 buyItemId = 1;
+}
+
+message BuyItemRes{
+}
+

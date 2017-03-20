@@ -1,0 +1,16 @@
+{
+	"LogLevel": "debug",
+	"LogPath": "",
+	"TCPAddr": "104.224.130.90:3544",
+	"MaxConnNum": 20000,
+	"MysqlServer": "localhost",
+	"MysqlPort": "3306",
+	"MysqlUserName": "root",
+	"MysqlPassWord": "123456",
+	"MysqlName"	: "game",
+
+	"RedisAddr": "192.168.1.15:63379",
+	"RedisPasswd": "",
+	"RedisMaxConn": 8,
+	"IsStg": true
+}

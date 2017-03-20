@@ -1,0 +1,20 @@
+syntax = "proto3";
+package msg;
+
+message UserData{
+int32 userId = 1;
+string userName = 2;
+string avatar = 3;
+int32 gold = 4;
+int32 diamond = 5;
+int32 exp = 6;
+string mobile = 7;
+int32 level = 8;
+int32 vipLevel = 9;
+}
+
+message ChangeMsg{
+bool isLevelUp = 1;
+bool isVipLevelUp = 2;
+bool isHaveNewMail = 3;
+}

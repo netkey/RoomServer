@@ -1,0 +1,37 @@
+syntax = "proto3";
+package msg;
+
+
+///////////////////主玩法////////////////////////
+
+message CreateDeskReq{
+int32 gameType = 1;
+}
+
+message CreateDeskRes{
+
+}
+
+
+message checkInDeskReq{
+
+}
+
+message checkInDeskRes{
+
+}
+
+
+message GameDataInfo{
+
+}
+
+////////////////////调试用///////////////////////
+
+message GMGameReq{
+    string gmCmd = 1;
+}
+
+message GMGameRes{
+
+}
