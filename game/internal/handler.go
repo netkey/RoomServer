@@ -10,10 +10,9 @@ import (
 
 func init() {
 	// 向当前模块（game 模块）注册 Room 消息的消息处理函数 handleRoom
-
 	handler(&msg.HeartBeat{},handleHeartBeat)
 	handler(&msg.GMGameReq{},handleGmCmd)
-	//handler(&msg.MarryGameReq{},handleMarryGame)
+
 }
 
 func handler(m interface{}, h interface{}) {

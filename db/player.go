@@ -27,25 +27,12 @@ type User struct {
 	LastLoginTime   	time.Time
 	IsLevelUp			bool
 	IsVipLevelUp		bool
-	UserMaxBetting  	int32
-	MainGameData		OneArmGameData
-	LittleGameData		MarryGameData
 	TotalBetting 		int64
 	TotalGame			int64
-	LastRechargeTime	int64
-	FirstRechargeTime	int64
-	HistoryMaxBetting	int64
+	PlayerRoomID		string
 }
 
-type OneArmGameData struct {
 
-}
-
-type MarryGameData struct {
-	PlayTicket	string
-	GameRounds	int32
-	Betting		int32
-}
 
 func GetPlayerByUserName(Name string)(userData User,err error){
 	log.Debug(`GetPlayerByUserName:[%s]`,Name)

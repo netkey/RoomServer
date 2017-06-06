@@ -41,3 +41,50 @@ func InitRedis() {
 	log.Debug("LogRedis Add:[%s] PW:[%s] MC:[%d]", conf.Server.RedisAddr, conf.Server.RedisPasswd, conf.Server.RedisMaxConn)
 	redisPool = newPool(conf.Server.RedisAddr, conf.Server.RedisPasswd, conf.Server.RedisMaxConn)
 }
+
+func RedisKVGet(Key string)(Val string,IsExist bool,err error){
+	log.Debug("[RedisKVGet] K:(%s)",Key)
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+	r, err := redisConn.Do("exists", Key)
+	IsExist, err = redis.Bool(r, err)
+	if err != nil {
+		log.Debug("RedisKVGet error (%s)", err.Error())
+		return
+	}
+	if !IsExist{
+		log.Debug("[RedisKVGet] Not Exist")
+		return
+	}
+	r, err = redisConn.Do("hgetall", Key)
+	retMap, err := redis.StringMap(r, err)
+	if err != nil {
+		log.Debug("[RedisKVGet]")
+		return
+	}
+	Val = retMap["Val"]
+	if err != nil {
+		log.Debug("[RedisKVGet]")
+		return
+	}
+	return
+}
+
+
+func RedisSet(key string, val string, expire int) error {
+	//mylog.LOG.I("[RedisSet] K:(%s)  V:(%s)",key,val)
+	redisConn := redisPool.Get()
+	defer redisConn.Close()
+	_, err := redisConn.Do("set", key, val)
+	if err != nil {
+		log.Debug("RedisSet error (%s)", key)
+		return err
+	}
+	if expire != 0 {
+		_, err = redisConn.Do("expire", key, expire)
+		if err != nil {
+			log.Debug("Redis expire error: %v", err)
+		}
+	}
+	return nil
+}

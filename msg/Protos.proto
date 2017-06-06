@@ -17,6 +17,15 @@ checkInDeskReq  = 2003;
 checkInDeskRes  = 2004;
 gameDataInfo    = 2005;
 
+//GameRelate
+getMarjongInfo = 3000;
+putMahjongReq = 3001;
+putMahjongRes =3002;
+tryWantMahjongReq = 3003;
+tryWantMahjongRes = 3004;
+
+
+
 gmCmdReq = 18000;
 gmCmdRes = 18001;
 heartBeat = 9999;
